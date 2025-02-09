@@ -18,7 +18,16 @@ app.use(signupRouter);
 app.use(signoutRouter);
 
 // Error handler middleware
-app.use(errorHandler);
+app.use(
+  (
+    err: Error,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    errorHandler(err, req, res, next);
+  }
+);
 
 app.listen(3000, () => {
   console.log("Listening on port 3000!");
