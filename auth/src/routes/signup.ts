@@ -21,18 +21,21 @@ const signupSchema = z.object({
     .max(20, "Password must be at most 20 characters long"),
 });
 
-router.post("/api/users/signup", (req: Request, res: Response): any => {
-  const result = signupSchema.safeParse(req.body);
+router.post(
+  "/api/users/signup",
+  async (req: Request, res: Response): Promise<any> => {
+    const result = signupSchema.safeParse(req.body);
 
-  if (!result.success) {
-    // const errors = result.error.errors.map((error) => error.message);
-    // console.log(result);
-    throw new RequestValidationError(result.error);
+    if (!result.success) {
+      // const errors = result.error.errors.map((error) => error.message);
+      // console.log(result);
+      throw new RequestValidationError(result.error);
+    }
+
+    throw new DatabaseConnectionError();
+
+    // return res.status(201).json({ message: "Đăng ký thành công!" }); // Trả về success với status 201
   }
-
-  throw new DatabaseConnectionError();
-
-  // return res.status(201).json({ message: "Đăng ký thành công!" }); // Trả về success với status 201
-});
+);
 
 export { router as signupRouter };
