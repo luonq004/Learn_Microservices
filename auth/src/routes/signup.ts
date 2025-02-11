@@ -1,9 +1,12 @@
 import express, { Request, Response } from "express";
 import { z } from "zod";
-import { RequestValidationError } from "../errors/request-validation-error";
-import { DatabaseConnectionError } from "../errors/database-connection-error";
 
-const router = express.Router(); // Đã chính xác
+import { RequestValidationError } from "../errors/request-validation-error";
+import { BadRequestError } from "../errors/bad-request-error";
+
+import { User } from "../models/user.schema";
+
+const router = express.Router();
 
 const signupSchema = z.object({
   email: z
@@ -27,14 +30,21 @@ router.post(
     const result = signupSchema.safeParse(req.body);
 
     if (!result.success) {
-      // const errors = result.error.errors.map((error) => error.message);
-      // console.log(result);
       throw new RequestValidationError(result.error);
     }
 
-    throw new DatabaseConnectionError();
+    const { email, password } = req.body;
 
-    // return res.status(201).json({ message: "Đăng ký thành công!" }); // Trả về success với status 201
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      throw new BadRequestError("Email in use");
+    }
+
+    const user = User.build({ email, password });
+    await user.save();
+
+    res.status(201).send(user);
   }
 );
 
