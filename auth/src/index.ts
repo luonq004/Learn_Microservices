@@ -1,7 +1,8 @@
 import express from "express";
 import "express-async-errors";
-import morgan from "morgan";
 import mongoose from "mongoose";
+import cookieSession from "cookie-session";
+import morgan from "morgan";
 
 // ROUTES
 import { currentUserRouter } from "./routes/current-user";
@@ -14,7 +15,14 @@ import { NotFoundError } from "./errors/not-found-error";
 import { errorHandler } from "./middlewares/error-handler";
 
 const app = express();
+app.set("trust proxy", true);
 app.use(express.json());
+app.use(
+  cookieSession({
+    signed: false,
+    secure: true,
+  })
+);
 app.use(morgan("dev"));
 
 app.use(currentUserRouter);
