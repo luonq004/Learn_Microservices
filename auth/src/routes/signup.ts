@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
-import { z } from "zod";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
 
-import { RequestValidationError } from "../errors/request-validation-error";
 import { BadRequestError } from "../errors/bad-request-error";
 
+import { validateRequest } from "../middlewares/validate-request";
 import { User } from "../models/user.schema";
 
 const router = express.Router();
@@ -27,13 +27,8 @@ const signupSchema = z.object({
 
 router.post(
   "/api/users/signup",
+  validateRequest(signupSchema),
   async (req: Request, res: Response): Promise<any> => {
-    const result = signupSchema.safeParse(req.body);
-
-    if (!result.success) {
-      throw new RequestValidationError(result.error);
-    }
-
     const { email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -50,9 +45,8 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      "asdf"
+      process.env.JWT_KEY!
     );
-    console.log(userJWT);
 
     req.session = {
       jwt: userJWT,
