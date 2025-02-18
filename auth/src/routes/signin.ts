@@ -32,7 +32,7 @@ router.post(
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      throw new BadRequestError("Invalid credentialsas");
+      throw new BadRequestError("Invalid credentials");
     }
 
     const passwordsMatch = await Password.compare(
