@@ -2,9 +2,9 @@ import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-import { BadRequestError } from "../errors/bad-request-error";
+import { BadRequestError } from "@lqvtickets/common";
 
-import { validateRequest } from "../middlewares/validate-request";
+import { validateRequest } from "@lqvtickets/common";
 import { User } from "../models/user.schema";
 
 const router = express.Router();

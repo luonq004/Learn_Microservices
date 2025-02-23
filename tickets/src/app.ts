@@ -1,17 +1,9 @@
 import express from "express";
 import "express-async-errors";
-
 import cookieSession from "cookie-session";
+import { errorHandler, NotFoundError } from "@lqvtickets/common";
 
-// ROUTES
-import { currentUserRouter } from "./routes/current-user";
-import { signinRouter } from "./routes/signin";
-import { signupRouter } from "./routes/signup";
-import { signoutRouter } from "./routes/signout";
-import { NotFoundError } from "@lqvtickets/common";
-
-// MIDDLEWARES
-import { errorHandler } from "@lqvtickets/common";
+import { createTicketRouter } from "./routes/new";
 
 const app = express();
 app.set("trust proxy", true);
@@ -24,10 +16,7 @@ app.use(
   })
 );
 
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signupRouter);
-app.use(signoutRouter);
+app.use(createTicketRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
