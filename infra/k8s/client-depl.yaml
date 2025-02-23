@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clientt-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clientt
+  template:
+    metadata:
+      labels:
+        app: clientt
+    spec:
+      containers:
+        - name: clientt
+          image: luonq/clientt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clientt-srv
+spec:
+  selector:
+    app: clientt
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

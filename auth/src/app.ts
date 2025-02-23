@@ -2,7 +2,6 @@ import express from "express";
 import "express-async-errors";
 
 import cookieSession from "cookie-session";
-import morgan from "morgan";
 
 // ROUTES
 import { currentUserRouter } from "./routes/current-user";
@@ -21,9 +20,9 @@ app.use(
   cookieSession({
     signed: false,
     secure: process.env.NODE_ENV !== "test",
+    // secure: true,
   })
 );
-app.use(morgan("dev"));
 
 app.use(currentUserRouter);
 app.use(signinRouter);
